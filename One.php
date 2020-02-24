@@ -1,6 +1,6 @@
 <?php
 /*
- * One Engine PHP, v.0.1, 2020
+ * One Engine PHP, v.0.1, 2020, created by R
  *
  * Usage from PHP file: 
  * new One('settings_file.json');
