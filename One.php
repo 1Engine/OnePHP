@@ -14,17 +14,58 @@
  * php One.php /path/settings.json
  */
 
-/*
+
 new One('{
 	"api": {
 		"domain": "api.",
 		"route": {
-
+			"categoryBooksSearch": {
+				"url": "/category/{category}?search={text}",
+				"method": "get",
+				"run": "getCategoryBooks"
+			}
 		}
 	},
 	"web": {
+		"theme": "dark",
+		"html": {
+			"head": {
+				"scripts": ["jquery","bootstrap"],
+				"styles": ["bootstrap"],
+				"title": "Books",
+				"description": "",
+				"author": "",
+				"meta": []
+			},
+			"body": [
+			]
+		},
 		"route": {
-
+			"categoryBooksSearch": {
+				"url": "/category/{category}?search={text}",
+				"method": "get",
+				"screen": ""
+				"run": "getCategoryBooks"
+			}
+		},
+		"screen": {
+			"404": [],
+			"home": [],
+			"contacts": [],
+			"categories": [],
+			"books": [],
+			"book": [],
+			"blog": [],
+			"admin.login": [],
+			"admin.recover": [],
+			"admin.changePassword": [],
+			"admin.books": [],
+			"admin.authors": [],
+			"admin.category": [],
+			"admin.blog": [],
+			"admin.info": [],
+			"admin.dashboard": [],
+			"admin.home": []
 		}
 	},
 	"cli": {
@@ -39,11 +80,24 @@ new One('{
 	"language": {
 		"default": "en"
 	},
+	"bzz": [
+		{"model": [{},{},{}]}
+		{"source": "chat", "secured": true},
+		{"source": "map"},
+		{"source": "media", "contentTypes": ["image","video"]},
+		{"source": "map"},
+		{"source": "tabs"}
+	],
 	"string": {
 		"Title": {"ru": "Заголовок", "en": "Title"}
+	},
+	"method": {
+		"getCategoryBooks": [
+
+		]
 	}
 }');
-*/
+
 
 if (count($argv) > 0) {
 	new One(array_slice($argv, 1));
@@ -52,7 +106,52 @@ if (count($argv) > 0) {
 class One {
 
 	private $settings = [
-		'environment' => 'debug'
+		'environment' => 'debug',
+		'web' => {
+			'template' => {
+				'view' => '',
+				'button' => '',
+				'etit' => '',
+				'editText' => '',
+				'text' => '',
+				'scroll' => '',
+				'scrollH' => '',
+				'scrollV' => '',				
+				'stack' => '',
+				'stackH' => '',
+				'stackV' => '',
+				'tile' => '',
+				'tileH' => '',
+				'tileV' => '',
+				'list' => '',
+				'switch' => '',
+				'select' => '',
+				'slider' => '',
+				'progress' => '',
+				'web' => '',
+				'map' => '',
+				'chart' => '',
+				'image' => '',
+				'draw' => '',
+				'video' => '',
+				'control' => '',
+				'tab' => '',
+				'menu' => '',
+				'search' => '',
+				'upload' => '',
+				'popupNotification' => '',
+				'popupDialog' => '',
+				'popupList' => '',
+				'popupSelect' => '',
+				'popupView' => '',
+				'popupTile' => '',
+				'popupColor' => '',
+				'popupDate' => '',
+				'popupTime' => '',
+				'popupEdit' => '',
+				'popupEditText' => '',
+			}
+		}
 	];
 
 	function __construct() {
@@ -155,6 +254,16 @@ class One {
 				throw new Exception('wrong method parameters', 10103);
 			},
 
+			// CLI
+			'cli.color' => function() {
+
+			},
+			'cli.image' => function() {
+
+			},
+			'cli.table' -> function() {
+			}
+
 			// Crypto
 
 			'crypto.md5' => function($string) {
@@ -245,14 +354,14 @@ class One {
 				return $xml->asXML();
 			},
 			'format.html.parse' => function($params) {
-
+				//html to array
 			},
 			'format.html.create' => function($params) {
-
+				echo '<html><head></head><body></body></html>';
 			},
 			'format.json.parse' => function($params) {
 				return json_decode($params, true);
-			},			
+			},
 			'format.json.create' => function($params) {
 				return json_encode($params);
 			},
@@ -266,7 +375,8 @@ class One {
 			// Parse
 
 			'parse' => function($params) {
-
+				$rules = isset($params['rules']) ? $params['rules'] : [];
+				$content = isset($params['content']) ? $params['content'] : '';
 			},
 			'parse.html' => function($params) {
 			},
@@ -286,7 +396,12 @@ class One {
 			// Localize
 
 			'localize' => function($params) {
-
+				$text = is_string($params) ? $params : (isset($params['text']) ? $params['text'] : '');
+				$language = isset($params['language']) ? $params['language'] : (isset($this->settings['language']['default']) ? $this->settings['language']['default'] : null);
+				if (isset($this->settings['string'][$text])) {
+					return isset($this->settings['string'][$text][$language]) ? $this->settings['string'][$text][$language] : (is_string($this->settings['string'][$text]) ? $this->settings['string'][$text] : $text);
+				}
+				return $text;
 			},
 
 			// Archive
@@ -354,8 +469,10 @@ class One {
 
 			// Route
 
-			'route.parse' => function($params = []) {
-
+			'route.parse' => function($routes = []) {
+				foreach ($routes as $name => $route) {
+					
+				}
 			},
 			'route.create' => function() {
 
